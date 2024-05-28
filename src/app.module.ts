@@ -6,10 +6,16 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { SignupController } from './signup/signup.controller';
-import { DatabaseModule } from './database/database.module'; // Import DatabaseModule
+import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, UsersModule, DatabaseModule], // Import DatabaseModule here
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    AuthModule,
+    UsersModule,
+    DatabaseModule,
+  ], // Import DatabaseModule here
   controllers: [AppController, SignupController],
   providers: [AppService],
 })

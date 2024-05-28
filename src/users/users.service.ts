@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from 'src/signup/create_user.dto';
 import * as bcrypt from 'bcrypt';
+import { DatabaseService } from 'src/database/database.service';
 
 // This should be a real class/interface representing a user entity
 export type User = {
@@ -39,6 +40,8 @@ export class UsersService {
     },
   ];
 
+  constructor(private databaseService: DatabaseService) {}
+
   async create(user: CreateUserDto): Promise<User> {
     try {
       const hashedPassword = await hashPassword(user.password);
@@ -49,6 +52,7 @@ export class UsersService {
         password: hashedPassword,
       };
 
+      this.databaseService.test();
       this.users.push(newUser);
 
       // Omit password when returning createdUser to the Response

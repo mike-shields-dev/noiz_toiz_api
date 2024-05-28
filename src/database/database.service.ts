@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
-import { dbConstants } from './constants';
-import * as dotenv from 'dotenv';
+import { dbCredentials } from './credentials';
+import { ConfigService } from '@nestjs/config';
 
-dotenv.config();
-
-const { user, password, host, database, port } = dbConstants;
-
+const { user, password, host, database, port } = dbCredentials;
 @Injectable()
 export class DatabaseService {
   private readonly pool: Pool;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     const connectionString = `postgresql://${user}:${password}@${host}:${port}/${database}?sslmode=verify-full`;
     this.pool = new Pool({
       connectionString: connectionString,
     });
+  }
+
+  async test() {
+    const dbUser = this.configService.get<string>('DB_USER');
+    console.log({ dbUser });
   }
 
   async executeQuery(query: string, values: any[] = []): Promise<any> {
